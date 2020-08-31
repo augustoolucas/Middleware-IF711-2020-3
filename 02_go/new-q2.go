@@ -13,14 +13,16 @@ var (
 	countConsumers = 0
 )
 
-func producer(ch chan<- int, n int) {
+func producer(ch chan<- int, n int, ch2 chan int) {
+	fmt.Println("waiting consumer...")
+	<-ch2
 	for i := 0; i < countConsumers; i++ {
 		ch <- n
 		fmt.Println("Produced: ", n)
 	}
 }
 
-func consumer(id int, ch <-chan int, wg *sync.WaitGroup) {
+func consumer(id int, ch <-chan int, wg *sync.WaitGroup, ch2 chan int) {
 	fmt.Println("Consumer ID:", id)
 	for {
 		select {
@@ -29,6 +31,7 @@ func consumer(id int, ch <-chan int, wg *sync.WaitGroup) {
 			wg.Done()
 			return
 		default:
+			ch2 <- 1
 			fmt.Println("Consumer", id, "waiting producer")
 			time.Sleep(10 * time.Millisecond)
 		}
@@ -42,14 +45,15 @@ func main() {
 	time.Sleep(time.Second)
 
 	ch := make(chan int, countConsumers)
+	ch2 := make(chan int, countConsumers)
 
 	rand.Seed(time.Now().UnixNano())
 
-	go producer(ch, rand.Intn(100))
 	var wg sync.WaitGroup
 	wg.Add(countConsumers)
 	for i := 0; i < countConsumers; i++ {
-		go consumer(i, ch, &wg)
+		go consumer(i, ch, &wg, ch2)
 	}
+	go producer(ch, rand.Intn(100), ch2)
 	wg.Wait()
 }
