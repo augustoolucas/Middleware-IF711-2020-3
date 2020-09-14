@@ -6,15 +6,15 @@ using namespace std;
 
 mutex m;
 
-void drive(string direction){
+void drive(int i,string direction){
     m.lock();
     if(direction == "left"){
-        printf("carro entrando na estrada pra ir para esquerda\n");
-        printf("carro indo para esquerda\n");
+        printf("carro entrando na estrada pra ir para esquerda %d\n", i);
+        printf("carro indo para esquerda %d \n", i);
     }
     else if(direction == "right"){
-        printf("carro entrando na estrada pra ir para direita\n");
-        printf("carro indo para direita\n");
+        printf("carro entrando na estrada pra ir para direita %d\n", i);
+        printf("carro indo para direita %d\n", i);
     }
     else{
         printf("Direcao Invalida\n");
@@ -23,9 +23,10 @@ void drive(string direction){
 }
 
 int main(){
-    thread t1(drive, "left");
-    thread t2(drive, "right");
-
-    t1.join();
-    t2.join();
+    for(int i = 0; i < 10; i+=2){
+        thread t1(drive, i, "left");
+        thread t2(drive, i+1,"right");
+        t1.join();
+        t2.join();
+    }
 }
