@@ -45,7 +45,7 @@ func CalculatorClientTCP() {
 			os.Exit(0)
 		}
 
-		fmt.Printf("%s(%d,%d) = %.0f \n",msgToServer.Op,msgToServer.P1,msgToServer.P2,response.Result[0].(float64))
+		fmt.Printf("%s(%d,%d) = %.0f \n", msgToServer.Op, msgToServer.P1, msgToServer.P2, response.Result[0].(float64))
 	}
 }
 
@@ -55,4 +55,3 @@ func main() {
 
 	_, _ = fmt.Scanln()
 }
-
