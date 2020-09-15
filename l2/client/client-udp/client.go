@@ -61,7 +61,8 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
 		executionTime := time.Since(start)
 		responseTimes = append(responseTimes, float64(executionTime))
 		totalTime += executionTime
-		fmt.Printf("%s(%d,%d) = %.0f \n", request.Op, request.P1, request.P2, response.Result[0])
+		fmt.Printf("%s(%d,%d) = %.0f \n", request.Op, request.P1, request.P2,
+			response.Result[0])
 
 		time.Sleep(time.Second * 2)
 	}
@@ -69,8 +70,8 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
 	meanFloat, stdDevFloat := stat.MeanStdDev(responseTimes, nil)
 	mean := time.Duration(meanFloat)
 	stdDev := time.Duration(stdDevFloat)
-	fmt.Println("ID: ", clientID, "- Mean: ", mean, " - Standard Deviation: ",
-		stdDev)
+	fmt.Println("ID: ", clientID, "- Total Time: ", totalTime, "- Mean: ",
+		mean, " - Standard Deviation: ", stdDev)
 }
 
 func main() {

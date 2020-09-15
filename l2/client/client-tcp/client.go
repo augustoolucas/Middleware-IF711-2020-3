@@ -63,8 +63,8 @@ func CalculatorClientTCP(clientID int, wg *sync.WaitGroup) {
 	meanFloat, stdDevFloat := stat.MeanStdDev(responseTimes, nil)
 	mean := time.Duration(meanFloat)
 	stdDev := time.Duration(stdDevFloat)
-	fmt.Println("ID: ", clientID, "- Mean: ", mean, " - Standard Deviation: ",
-		stdDev)
+	fmt.Println("ID: ", clientID, "- Total time: ", totalTime, "- Mean: ",
+		mean, " - Standard Deviation: ", stdDev)
 }
 
 func main() {

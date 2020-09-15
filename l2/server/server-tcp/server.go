@@ -11,7 +11,6 @@ import (
 )
 
 func CalculatorServerTCP() {
-
 	// Listen on tcp port
 	ln, err := net.Listen("tcp", "localhost:"+strconv.Itoa(shared.CALCULATOR_PORT))
 	if err != nil {
@@ -56,7 +55,7 @@ func HandleTCP(conn net.Conn) {
 		r := impl.Calculadora{}.InvocaCalculadora(msgFromClient)
 
 		// Create response
-		msgToClient := shared.Reply{[]interface{}{r}}
+		msgToClient := shared.Reply{Result: []interface{}{r}}
 
 		// Serialise and send response to clientserver
 		err = jsonEncoder.Encode(msgToClient)
