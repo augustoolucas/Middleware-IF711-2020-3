@@ -3,13 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gonum/stat"
 	"net"
 	"os"
 	"shared"
 	"strconv"
+	"sync"
+	"time"
 )
 
-func CalculatorClientTCP() {
+func CalculatorClientTCP(clientID int, wg *sync.WaitGroup) {
 	var response shared.Reply
 
 	// Connect to server
@@ -21,15 +24,19 @@ func CalculatorClientTCP() {
 
 	// Close connection
 	defer conn.Close()
+	defer wg.Done()
 
 	// Create enconder/decoder
 	jsonDecoder := json.NewDecoder(conn)
 	jsonEncoder := json.NewEncoder(conn)
 
-	for i := 0; i < shared.SAMPLE_SIZE; i++ {
+	var responseTimes []float64
+	var totalTime time.Duration
 
+	for i := 0; i < shared.SAMPLE_SIZE; i++ {
+		start := time.Now()
 		// Prepare request
-		msgToServer := shared.Request{"add", i, i}
+		msgToServer := shared.Request{Op: "add", P1: i, P2: i}
 
 		// Serialise and send request to server
 		err = jsonEncoder.Encode(msgToServer)
@@ -45,13 +52,33 @@ func CalculatorClientTCP() {
 			os.Exit(0)
 		}
 
-		fmt.Printf("%s(%d,%d) = %.0f \n", msgToServer.Op, msgToServer.P1, msgToServer.P2, response.Result[0].(float64))
+		executionTime := time.Since(start)
+		responseTimes = append(responseTimes, float64(executionTime))
+		totalTime += executionTime
+
+		//fmt.Printf("ID: %d - %s(%d,%d) = %.0f \n", clientID, msgToServer.Op,
+		//	msgToServer.P1, msgToServer.P2, response.Result[0].(float64))
 	}
+
+	meanFloat, stdDevFloat := stat.MeanStdDev(responseTimes, nil)
+	mean := time.Duration(meanFloat)
+	stdDev := time.Duration(stdDevFloat)
+	fmt.Println("ID: ", clientID, "- Mean: ", mean, " - Standard Deviation: ",
+		stdDev)
 }
 
 func main() {
+	var wg sync.WaitGroup
+	start := time.Now()
 
-	go CalculatorClientTCP()
+	for i := 0; i < shared.CLIENTS; i++ {
+		wg.Add(1)
+		go CalculatorClientTCP(i, &wg)
+	}
+
+	wg.Wait()
+
+	fmt.Println("Total execution time: ", time.Since(start))
 
 	_, _ = fmt.Scanln()
 }

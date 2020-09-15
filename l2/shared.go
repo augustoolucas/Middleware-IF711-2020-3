@@ -11,4 +11,5 @@ type Reply struct {
 }
 
 const CALCULATOR_PORT = 3300
-const SAMPLE_SIZE = 10
+const SAMPLE_SIZE = 10000
+const CLIENTS = 5
