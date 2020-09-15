@@ -58,7 +58,7 @@ func HandleUDP(conn *net.UDPConn, msgFromClient []byte, n int, addr *net.UDPAddr
 		r := impl.Calculadora{}.InvocaCalculadora(request)
 
 		// Create response
-		rep := shared.Reply{[]interface{}{r}}
+		rep := shared.Reply{Result: []interface{}{r}}
 
 		// Serialise response
 		msgToClient, err = json.Marshal(rep)
