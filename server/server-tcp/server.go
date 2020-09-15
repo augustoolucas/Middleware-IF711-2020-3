@@ -13,7 +13,7 @@ import (
 func CalculatorServerTCP() {
 
 	// Listen on tcp port
-	ln, err := net.Listen("tcp", "localhost:"+strconv.Itoa(2308))
+	ln, err := net.Listen("tcp", "localhost:"+strconv.Itoa(shared.CALCULATOR_PORT))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(0)
