@@ -3,16 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gonum/stat"
 	"net"
 	"os"
 	"shared"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/gonum/stat"
 )
 
-func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
+func CalculatorClientUDP(clientID int, wg *sync.WaitGroup, mux *sync.Mutex) {
 	var response shared.Reply
 
 	// Resolve server address
@@ -44,6 +45,7 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
 		// Create request
 		request := shared.Request{Op: "add", P1: i, P2: i}
 
+		mux.Lock()
 		// Serialise and send request
 		err = encoder.Encode(request)
 		if err != nil {
@@ -58,13 +60,13 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
 			os.Exit(0)
 		}
 
+		mux.Unlock()
 		executionTime := time.Since(start)
 		responseTimes = append(responseTimes, float64(executionTime))
 		totalTime += executionTime
-		fmt.Printf("%s(%d,%d) = %.0f \n", request.Op, request.P1, request.P2,
-			response.Result[0])
+		// fmt.Printf("%s(%d,%d) = %.0f \n", request.Op, request.P1, request.P2, response.Result[0])
 
-		time.Sleep(time.Second * 2)
+		//time.Sleep(time.Second * 2)
 	}
 
 	meanFloat, stdDevFloat := stat.MeanStdDev(responseTimes, nil)
@@ -76,11 +78,13 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup) {
 
 func main() {
 	var wg sync.WaitGroup
+	var mux sync.Mutex
+
 	start := time.Now()
 
 	for i := 0; i < shared.CLIENTS; i++ {
 		wg.Add(1)
-		go CalculatorClientUDP(i, &wg)
+		go CalculatorClientUDP(i, &wg, &mux)
 	}
 
 	wg.Wait()

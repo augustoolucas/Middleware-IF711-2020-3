@@ -2,12 +2,13 @@ package main
 
 import (
 	"calculadora/impl"
-	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"shared"
 	"strconv"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 func CalculatorServerUDP() {
@@ -47,6 +48,8 @@ func HandleUDP(conn *net.UDPConn, msgFromClient []byte, n int, addr *net.UDPAddr
 	var request shared.Request
 
 	for {
+		var json = jsoniter.ConfigCompatibleWithStandardLibrary
+
 		//Deserialize request from clientserver
 		err := json.Unmarshal(msgFromClient[:n], &request)
 		if err != nil {
