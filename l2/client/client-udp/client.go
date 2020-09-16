@@ -45,7 +45,7 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup, mux *sync.Mutex) {
 		// Create request
 		request := shared.Request{Op: "add", P1: i, P2: i}
 
-		mux.Lock()
+		//mux.Lock()
 		// Serialise and send request
 		err = encoder.Encode(request)
 		if err != nil {
@@ -60,8 +60,8 @@ func CalculatorClientUDP(clientID int, wg *sync.WaitGroup, mux *sync.Mutex) {
 			os.Exit(0)
 		}
 
-		mux.Unlock()
 		executionTime := time.Since(start)
+		//mux.Unlock()
 		responseTimes = append(responseTimes, float64(executionTime))
 		totalTime += executionTime
 		// fmt.Printf("%s(%d,%d) = %.0f \n", request.Op, request.P1, request.P2, response.Result[0])

@@ -12,7 +12,6 @@ import (
 )
 
 func CalculatorServerUDP() {
-	msgFromClient := make([]byte, 1024)
 
 	// Resolve server address
 	addr, err := net.ResolveUDPAddr("udp", ":"+strconv.Itoa(shared.CALCULATOR_PORT))
@@ -32,6 +31,7 @@ func CalculatorServerUDP() {
 
 	for {
 		// Receive request
+		msgFromClient := make([]byte, 1024)
 		n, addr, err := conn.ReadFromUDP(msgFromClient)
 		if err != nil {
 			fmt.Println(err)
