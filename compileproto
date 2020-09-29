@@ -1,0 +1,2 @@
+export PATH=$PATH:/Users/nsr/Dropbox/go/grpc/bin:/Users/nsr/Dropbox/go/grpc/bin:/Users/nsr/go/bin
+protoc -I calculadora/ calculadora/calculadora.proto --go_out=plugins=grpc:calculadora
