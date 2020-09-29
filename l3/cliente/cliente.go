@@ -25,9 +25,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	t1 := time.Now()
 	for idx = 0; idx < shared.SAMPLE_SIZE; idx++ {
 
+		t1 := time.Now()
 		// invoca operação remota
 		rep, msgErr := calc.Add(ctx, &calculadora.Request{Op: "add", P1: idx, P2: idx})
 
