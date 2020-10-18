@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func CalculatorClientRPC(clientID int, wg *sync.WaitGroup) {
+func CalculatorClientRPC(clientID int, means *[]float64, stds *[]float64, wg *sync.WaitGroup, mtx *sync.Mutex) {
 	var idx int32
 
 	// Estabelece conexão com o server
@@ -53,18 +53,32 @@ func CalculatorClientRPC(clientID int, wg *sync.WaitGroup) {
 	stdDev := time.Duration(stdDevFloat)
 	fmt.Println("ID: ", clientID, "Total time: ", totalTime, "- Mean: ", mean,
 		" - Standard Deviation: ", stdDev)
+
+	mtx.Lock()
+	*means = append(*means, meanFloat)
+	*stds = append(*stds, stdDevFloat)
+	mtx.Unlock()
 }
 
 func main() {
 	var wg sync.WaitGroup
 	start := time.Now()
+	var means []float64
+	var stds []float64
+	var mtx sync.Mutex
 
 	for i := 0; i < shared.CLIENTS; i++ {
 		wg.Add(1)
-		go CalculatorClientRPC(i, &wg)
+		go CalculatorClientRPC(i, &means, &stds, &wg, &mtx)
 	}
 
 	wg.Wait()
 
-	fmt.Println("Total execution time: ", time.Since(start))
+	meanFloat := stat.Mean(means, nil)
+	stdDevFloat := stat.Mean(stds, nil)
+	mean := time.Duration(meanFloat)
+	stdDev := time.Duration(stdDevFloat)
+
+	fmt.Println("Total execution time: ", time.Since(start), "- Average Mean: ", mean,
+		" - Average Standard Deviation: ", stdDev)
 }

@@ -3,12 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gonum/stat"
 	"github.com/streadway/amqp"
 	"shared"
+	"sync"
 	"time"
 )
 
-func main() {
+func CalculatorClientRabbitMQ(clientID int, means *[]float64, stds *[]float64, wg *sync.WaitGroup, mtx *sync.Mutex) {
 	// conecta ao server de mensageria
 	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	shared.ChecaErro(err, "Não foi possível se conectar ao server de mensageria")
@@ -18,6 +20,7 @@ func main() {
 	ch, err := conn.Channel()
 	shared.ChecaErro(err, "Não foi possível estabelecer um canal de comunicação com o server de mensageria")
 	defer ch.Close()
+	defer wg.Done()
 
 	// declara as filas
 	requestQueue, err := ch.QueueDeclare(
@@ -33,9 +36,12 @@ func main() {
 		false, false, nil)
 	shared.ChecaErro(err, "Falha ao registrar o consumidor server de mensageria")
 
-	start := time.Now()
+	var responseTimes []float64
+	var totalTime time.Duration
+
 	for i := 0; i < shared.SAMPLE_SIZE; i++ {
-		t1 := time.Now()
+		start := time.Now()
+		// t1 := time.Now()
 
 		// prepara request
 		msgRequest := shared.Request{Op: "add", P1: i, P2: i}
@@ -52,12 +58,45 @@ func main() {
 
 		var result shared.Reply
 		json.Unmarshal(x.Body, &result)
-		fmt.Println(result.Result[0])
-		t2 := time.Now()
-		y := float64(t2.Sub(t1).Nanoseconds()) / 1000000
-		fmt.Println(y)
+		// fmt.Println(result.Result[0])
+
+		executionTime := time.Since(start)
+		responseTimes = append(responseTimes, float64(executionTime))
+		totalTime += executionTime
 	}
 
-	elapsed := time.Since(start)
-	fmt.Printf("Tempo: %s \n", elapsed)
+	meanFloat, stdDevFloat := stat.MeanStdDev(responseTimes, nil)
+	mean := time.Duration(meanFloat)
+	stdDev := time.Duration(stdDevFloat)
+	fmt.Println("ID: ", clientID, "Total time: ", totalTime, "- Mean: ", mean,
+		" - Standard Deviation: ", stdDev)
+
+	mtx.Lock()
+	*means = append(*means, meanFloat)
+	*stds = append(*stds, stdDevFloat)
+	mtx.Unlock()
+}
+
+func main() {
+	var wg sync.WaitGroup
+	start := time.Now()
+	var means []float64
+	var stds []float64
+	var mtx sync.Mutex
+
+	for i := 0; i < shared.CLIENTS; i++ {
+		wg.Add(1)
+		go CalculatorClientRabbitMQ(i, &means, &stds, &wg, &mtx)
+	}
+
+	wg.Wait()
+
+	meanFloat := stat.Mean(means, nil)
+	stdDevFloat := stat.Mean(stds, nil)
+	mean := time.Duration(meanFloat)
+	stdDev := time.Duration(stdDevFloat)
+
+	fmt.Println("Total execution time: ", time.Since(start), "- Average Mean: ", mean,
+		" - Average Standard Deviation: ", stdDev)
+
 }

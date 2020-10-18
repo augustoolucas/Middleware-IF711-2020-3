@@ -1,0 +1,11 @@
+ID:  5 Total time:  11.789783602s - Mean:  1.178978ms  - Standard Deviation:  1.599283ms
+ID:  0 Total time:  11.864126014s - Mean:  1.186412ms  - Standard Deviation:  1.599957ms
+ID:  3 Total time:  11.882446256s - Mean:  1.188244ms  - Standard Deviation:  1.656519ms
+ID:  1 Total time:  11.919852615s - Mean:  1.191985ms  - Standard Deviation:  1.592647ms
+ID:  4 Total time:  11.920517908s - Mean:  1.192051ms  - Standard Deviation:  1.607581ms
+ID:  2 Total time:  11.948830701s - Mean:  1.194883ms  - Standard Deviation:  1.62481ms
+ID:  9 Total time:  11.993961431s - Mean:  1.199396ms  - Standard Deviation:  1.674632ms
+ID:  6 Total time:  12.001962331s - Mean:  1.200196ms  - Standard Deviation:  1.616041ms
+ID:  7 Total time:  12.024784075s - Mean:  1.202478ms  - Standard Deviation:  1.628591ms
+ID:  8 Total time:  12.028195499s - Mean:  1.202819ms  - Standard Deviation:  1.641591ms
+Total execution time:  12.047213137s

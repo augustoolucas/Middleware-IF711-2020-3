@@ -1,0 +1,6 @@
+ID:  1 Total time:  6.793500906s - Mean:  679.35µs  - Standard Deviation:  1.114439ms
+ID:  0 Total time:  6.818934414s - Mean:  681.893µs  - Standard Deviation:  1.079151ms
+ID:  4 Total time:  6.851735816s - Mean:  685.173µs  - Standard Deviation:  1.074246ms
+ID:  2 Total time:  6.857357009s - Mean:  685.735µs  - Standard Deviation:  1.125034ms
+ID:  3 Total time:  6.871599428s - Mean:  687.159µs  - Standard Deviation:  1.119031ms
+Total execution time:  6.884356958s
