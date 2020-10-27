@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gonum/stat"
-	"github.com/streadway/amqp"
 	"shared"
 	"sync"
 	"time"
+
+	"github.com/gonum/stat"
+	"github.com/streadway/amqp"
 )
 
 func CalculatorClientRabbitMQ(clientID int, means *[]float64, stds *[]float64, wg *sync.WaitGroup, mtx *sync.Mutex) {
