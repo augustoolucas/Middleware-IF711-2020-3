@@ -1,81 +1,82 @@
 package main
 
 import (
-	"../hashing"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
+	"Middleware-IF711-2020-3/l5/clientproxy"
+	"Middleware-IF711-2020-3/l5/invoker"
+	"Middleware-IF711-2020-3/l5/naming"
+	"Middleware-IF711-2020-3/l5/serverproxy"
 	"fmt"
-	"net"
-	"os"
-	"shared"
-	"strings"
 )
 
-type SRH struct {
-	ServerHost string
-	ServerPort int
-}
+// type SRH struct {
+// 	ServerHost string
+// 	ServerPort int
+// }
 
-func hashRequest(req hashing.Request) string {
-	hashed := sha256.Sum256([]byte(req.PwRaw))
-	response := hex.EncodeToString(hashed[:])
+// func hashRequest(req hashing.Request) string {
+// 	hashed := sha256.Sum256([]byte(req.PwRaw))
+// 	response := hex.EncodeToString(hashed[:])
 
-	//fmt.Println(response)
-	return response
-}
+// 	//fmt.Println(response)
+// 	return response
+// }
 
-func invoker(receivedReq []byte) []byte {
-	request := hashing.Request{PwRaw: ""}
-	err := json.Unmarshal(receivedReq, &request)
-	shared.ChecaErro(err, "nao foi possivel unmarshal")
+// // func invoker(receivedReq []byte) []byte {
+// // 	request := hashing.Request{PwRaw: ""}
+// // 	err := json.Unmarshal(receivedReq, &request)
+// // 	shared.ChecaErro(err, "nao foi possivel unmarshal")
 
-	response := hashing.Response{PwSha256: hashRequest(request)}
-	responseRaw, err := json.Marshal(response)
-	shared.ChecaErro(err, "não foi possível fazer o marshal")
+// // 	response := hashing.Response{PwSha256: hashRequest(request)}
+// // 	responseRaw, err := json.Marshal(response)
+// // 	shared.ChecaErro(err, "não foi possível fazer o marshal")
 
-	return responseRaw
-}
+// // 	return responseRaw
+// // }
 
-func server(transportProtocol string) {
-	for {
-		if transportProtocol == "TCP" {
-			l, err := net.Listen("tcp", "localhost:3300")
-			shared.ChecaErro(err, "nao foi possivel criar servidor tcp")
-			defer l.Close()
+// func server(transportProtocol string) {
+// 	for {
+// 		if transportProtocol == "TCP" {
+// 			l, err := net.Listen("tcp", "localhost:3300")
+// 			shared.ChecaErro(err, "nao foi possivel criar servidor tcp")
+// 			defer l.Close()
 
-			conn, err := l.Accept()
-			shared.ChecaErro(err, "nao foi possivel aceitar conexao tcp")
-			defer conn.Close()
+// 			conn, err := l.Accept()
+// 			shared.ChecaErro(err, "nao foi possivel aceitar conexao tcp")
+// 			defer conn.Close()
 
-			receivedReq := make([]byte, 2048)
-			n, err := conn.Read(receivedReq)
+// 			receivedReq := make([]byte, 2048)
+// 			n, err := conn.Read(receivedReq)
 
-			shared.ChecaErro(err, "nao foi possivel receber mensagem do cliente udp")
-			conn.Write(invoker(receivedReq[:n]))
+// 			shared.ChecaErro(err, "nao foi possivel receber mensagem do cliente udp")
+// 			conn.Write(invoker(receivedReq[:n]))
 
-			return
-		} else if transportProtocol == "UDP" {
-			addr, err := net.ResolveUDPAddr("udp", ":8030")
-			conn, err := net.ListenUDP("udp", addr)
-			shared.ChecaErro(err, "nao foi possivel criar servidor udp")
+// 			return
+// 		} else if transportProtocol == "UDP" {
+// 			addr, err := net.ResolveUDPAddr("udp", ":8030")
+// 			conn, err := net.ListenUDP("udp", addr)
+// 			shared.ChecaErro(err, "nao foi possivel criar servidor udp")
 
-			defer conn.Close()
+// 			defer conn.Close()
 
-			receivedReq := make([]byte, 2048)
-			n, addr, err := conn.ReadFromUDP(receivedReq)
+// 			receivedReq := make([]byte, 2048)
+// 			n, addr, err := conn.ReadFromUDP(receivedReq)
 
-			shared.ChecaErro(err, "nao foi possivel receber mensagem do cliente udp")
+// 			shared.ChecaErro(err, "nao foi possivel receber mensagem do cliente udp")
 
-			conn.WriteToUDP(invoker(receivedReq[:n]), addr)
+// 			conn.WriteToUDP(invoker(receivedReq[:n]), addr)
 
-			return
-		}
-	}
-}
+// 			return
+// 		}
+// 	}
+// }
 
 func main() {
-	transportProtocol := os.Args[1]
-	go server(strings.ToUpper(transportProtocol))
+	m := make(map[string]clientproxy.ClientProxy)
+	namingService := naming.NamingService{Table: m}
+	hashing := serverproxy.ServerProxy{}
+	namingService.Register("Hashing", hashing)
+
+	//invoker
+	myInvoker := invoker.ServerInvoker()
 	fmt.Scanln()
 }

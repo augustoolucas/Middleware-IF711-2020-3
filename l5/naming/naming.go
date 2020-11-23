@@ -1,6 +1,6 @@
 package naming
 
-import "../clientproxy"
+import "Middleware-IF711-2020-3/l5/clientproxy"
 
 type NamingService struct {
 	Table map[string]clientproxy.ClientProxy

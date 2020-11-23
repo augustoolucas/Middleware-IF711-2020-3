@@ -1,27 +1,25 @@
 package main
 
 import (
-	"../hashing"
+	"Middleware-IF711-2020-3/l5/clientproxy"
 	"fmt"
 	"os"
-	"shared"
-	"strings"
 	"sync"
 )
 
-func client(transportProtocol string, wg *sync.WaitGroup, message string) {
-	response, err := hashing.HashPw(message, strings.ToUpper(transportProtocol))
-	shared.ChecaErro(err, "Houve erro na requisição")
-	fmt.Println(response)
+func client(wg *sync.WaitGroup, message string) {
+	m := make(map[string]clientproxy.ClientProxy)
+	namingService := namingService{m}
+	hashing := namingService.Lookup("Hash")
+	fmt.Println(hashing.HashPw(message))
 	wg.Done()
 }
 
 func main() {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	transportProtocol := os.Args[1]
-	message := os.Args[2]
-	go client(transportProtocol, &wg, message)
+	message := os.Args[1]
+	go client(&wg, message)
 	wg.Wait()
 
 }

@@ -1,7 +1,7 @@
 package marshaller
 
 import (
-	"../miop"
+	"Middleware-IF711-2020-3/l5/miop"
 	"encoding/json"
 	"fmt"
 )
@@ -12,7 +12,7 @@ func (Marshaller) Marshall(msg miop.Packet) []byte {
 	r, err := json.Marshal(msg)
 
 	if err != nil {
-		fmt.Println("Erro Marshall")
+		fmt.Println("Erro Marshall", err)
 	}
 
 	return r
@@ -23,7 +23,7 @@ func (Marshaller) Unmarshall(msg []byte) miop.Packet {
 	err := json.Unmarshal(msg, &r)
 
 	if err != nil {
-		fmt.Println("Erro Unmarshall")
+		fmt.Println("Erro Unmarshall", err)
 	}
 
 	return r
