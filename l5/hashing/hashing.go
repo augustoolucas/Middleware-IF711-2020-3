@@ -1,13 +1,11 @@
 package hashing
 
 import (
-	"encoding/json"
+	"../crh"
+	"../marshaller"
+	"../miop"
 	"errors"
-	"fmt"
-	"net"
 	"shared"
-	"strings"
-	"time"
 )
 
 //Response em sha256
@@ -17,7 +15,8 @@ type Response struct {
 
 //Request pro hasher
 type Request struct {
-	PwRaw string
+	Op     string
+	Params []interface{}
 }
 
 type ClientProxy struct {
@@ -45,62 +44,40 @@ func HashPw(message string, transportProtocol string) (string, error) {
 	proxy := ClientProxy{Host: "localhost", Port: 3080, Id: 1, TypeName: "type"}
 
 	// Prepara a invocação ao Requestor
-	request := Request{PwRaw: message}
+	params := make([]interface{}, 1)
+	params[0] = message
+	request := Request{Op: "hash", Params: params}
 	inv := Invocation{Host: proxy.Host, Port: proxy.Port, Request: request}
 
 	// invoke requestor
 	// Invoca o Requestor e aguarda resposta
 	req := Requestor{}
-	response := req.Invoke(inv, transportProtocol)
+	response := req.Invoke(inv, transportProtocol).([]interface{})
 
 	// Envia resposta ao Cliente
-	return response.PwSha256, nil
+	return string(response[0].(string)), nil
 }
 
-func (Requestor) Invoke(inv Invocation, transportProtocol string) Response {
-	pwRawBytes, err := json.Marshal(inv.Request)
-	shared.ChecaErro(err, "não foi possível fazer o marshal")
+func (Requestor) Invoke(inv Invocation, transportProtocol string) interface{} {
+	marshallerInst := marshaller.Marshaller{}
+	crhInst := crh.CRH{ServerHost: inv.Host, ServerPort: inv.Port}
 
-	var response = Response{PwSha256: ""}
-	err = json.Unmarshal(CRH(pwRawBytes, transportProtocol), &response)
-	return response
-}
+	// create request packet
+	reqHeader := miop.RequestHeader{Context: "Context", RequestID: 1000, ResponseExpected: true, ObjectKey: 2000, Operation: inv.Request.Op}
+	reqBody := miop.RequestBody{Body: inv.Request.Params}
+	header := miop.Header{Magic: "MIOP", Version: "1.0", ByteOrder: true, MessageType: 1}
+	body := miop.Body{ReqHeader: reqHeader, ReqBody: reqBody}
+	miopPacketRequest := miop.Packet{Hdr: header, Bd: body}
 
-//CRH client request handler
-func CRH(pwRawBytes []byte, protocol string) []byte {
-	timeoutSeconds := time.Second * 3
+	// serialise request packet
+	msgToClientBytes := marshallerInst.Marshall(miopPacketRequest)
 
-	if protocol == "TCP" {
-		conn, err := net.DialTimeout(strings.ToLower(protocol), "localhost:3300", timeoutSeconds)
-		shared.ChecaErro(err, "nao foi possivel estabelecer conexao tcp")
-		defer conn.Close()
+	// send request packet and receive reply packet
+	msgFromServerBytes := crhInst.SendReceive(msgToClientBytes, transportProtocol)
+	miopPacketReply := marshallerInst.Unmarshall(msgFromServerBytes)
 
-		_, err = conn.Write(pwRawBytes)
-		shared.ChecaErro(err, "nao foi possivel enviar mensagem tcp")
-		response := make([]byte, 2048)
-		n, err := conn.Read(response)
+	// extract result from reply packet
+	r := miopPacketReply.Bd.RepBody.OperationResult
 
-		fmt.Println("preso aqui")
-		shared.ChecaErro(err, "nao foi possivel receber mensagem tcp")
-
-		return response[:n]
-	} else if protocol == "UDP" {
-		addr, err := net.ResolveUDPAddr(strings.ToLower(protocol), "localhost:8030")
-		shared.ChecaErro(err, "nao foi possivel resolver endereço udp")
-
-		conn, err := net.DialUDP("udp", nil, addr)
-		defer conn.Close()
-
-		_, err = conn.Write(pwRawBytes)
-		shared.ChecaErro(err, "nao foi possivel enviar mensagem udp")
-
-		response := make([]byte, 2048)
-		n, err := conn.Read(response)
-		shared.ChecaErro(err, "nao foi possivel receber mensagem udp")
-
-		return response[:n]
-	}
-
-	var reponse []byte
-	return reponse
+	return r
 }

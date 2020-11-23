@@ -2,7 +2,7 @@ package miop
 
 type Packet struct {
 	Hdr Header
-	Br  Body
+	Bd  Body
 }
 
 type Header struct {

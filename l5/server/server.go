@@ -1,18 +1,21 @@
 package main
 
 import (
+	"../hashing"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"hashing"
 	"net"
 	"os"
 	"shared"
 	"strings"
 )
 
-// TODO criar estrutura de dados aqui do objeto remoto
+type SRH struct {
+	ServerHost string
+	ServerPort int
+}
 
 func hashRequest(req hashing.Request) string {
 	hashed := sha256.Sum256([]byte(req.PwRaw))
@@ -75,7 +78,4 @@ func main() {
 	transportProtocol := os.Args[1]
 	go server(strings.ToUpper(transportProtocol))
 	fmt.Scanln()
-
 }
-
-//TODO
