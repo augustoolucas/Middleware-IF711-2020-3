@@ -2,6 +2,7 @@ package main
 
 import (
 	"Middleware-IF711-2020-3/l5/clientproxy"
+	"Middleware-IF711-2020-3/l5/naming"
 	"fmt"
 	"os"
 	"sync"
@@ -9,7 +10,7 @@ import (
 
 func client(wg *sync.WaitGroup, message string) {
 	m := make(map[string]clientproxy.ClientProxy)
-	namingService := namingService{m}
+	namingService := naming.NamingService{m}
 	hashing := namingService.Lookup("Hash")
 	fmt.Println(hashing.HashPw(message))
 	wg.Done()
