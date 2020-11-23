@@ -34,11 +34,9 @@ func (srh SRH) Receive() []byte {
 	if transportProtocol == "TCP" {
 		l, err = net.Listen("tcp", "localhost:3300")
 		shared.ChecaErro(err, "nao foi possivel criar servidor tcp")
-		defer l.Close()
 
 		conn, err = l.Accept()
 		shared.ChecaErro(err, "nao foi possivel aceitar conexao tcp")
-		defer conn.Close()
 
 		receivedReq := make([]byte, 2048)
 		n, err := conn.Read(receivedReq)
@@ -60,14 +58,18 @@ func (srh SRH) Receive() []byte {
 		return receivedReq[:n]
 
 	}
+
 	return reponse
 }
 
 func (srh SRH) Send(msgBytes []byte) {
 	transportProtocol := shared.TRANSPORT_PROTOCOL
-	defer conn.Close()
-
+	
 	if transportProtocol == "TCP" {
-		conn.Write(msgBytes)
+		_, err := conn.Write(msgBytes)
+		shared.ChecaErro(err, "server: nao foi possivel enviar mensagem tcp")
 	}
+
+	conn.Close()
+	l.Close()
 }

@@ -44,7 +44,7 @@ func (ClientProxy) HashPw(message string) (string, error) {
 	return string(response[0].(string)), nil
 }
 
-func (ClientProxy) Add(p1 int, p2 int, transportProtocol string) (int, error) {
+func (ClientProxy) Add(p1 int, p2 int) (int, error) {
 	proxy := ClientProxy{Host: "localhost", Port: 3080, Id: 1, TypeName: "type"}
 
 	// Prepara a invocação ao Requestor
@@ -60,5 +60,5 @@ func (ClientProxy) Add(p1 int, p2 int, transportProtocol string) (int, error) {
 	response := req.Invoke(inv).([]interface{})
 
 	// Envia resposta ao Cliente
-	return int(response[0].(int)), nil
+	return int(response[0].(float64)), nil
 }

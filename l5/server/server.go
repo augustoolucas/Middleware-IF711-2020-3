@@ -73,7 +73,8 @@ func main() {
 	m := make(map[string]clientproxy.ClientProxy)
 	namingService := naming.NamingService{Table: m}
 	hashing := clientproxy.ClientProxy{}
-	namingService.Register("Hashing", hashing)
+	namingService.Register("Hash", hashing)
+	namingService.Register("Add", hashing)
 
 	//invoker
 	myInvoker := invoker.ServerInvoker{}

@@ -5,7 +5,6 @@ import (
 	"Middleware-IF711-2020-3/l5/crh"
 	"Middleware-IF711-2020-3/l5/marshaller"
 	"shared"
-
 	"Middleware-IF711-2020-3/l5/miop"
 )
 
@@ -15,7 +14,6 @@ func (Requestor) Invoke(inv auxiliar.Invocation) interface{} {
 	transportProtocol := shared.TRANSPORT_PROTOCOL
 	marshallerInst := marshaller.Marshaller{}
 	crhInst := crh.CRH{ServerHost: inv.Host, ServerPort: inv.Port}
-
 	// create request packet
 	reqHeader := miop.RequestHeader{Context: "Context", RequestID: 1000, ResponseExpected: true, ObjectKey: 2000, Operation: inv.Request.Op}
 	reqBody := miop.RequestBody{Body: inv.Request.Params}
@@ -32,6 +30,5 @@ func (Requestor) Invoke(inv auxiliar.Invocation) interface{} {
 
 	// extract result from reply packet
 	r := miopPacketReply.Bd.RepBody.OperationResult
-
 	return r
 }
