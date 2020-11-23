@@ -1,8 +1,8 @@
 package main
 
 import (
+	"../hashing"
 	"fmt"
-	"hashing"
 	"os"
 	"shared"
 	"strings"
@@ -10,10 +10,7 @@ import (
 )
 
 func client(transportProtocol string, wg *sync.WaitGroup, message string) {
-	//fmt.Println(transportProtocol)
-	myReq := hashing.Request{PwRaw: message}
-
-	response, err := hashing.HashPw(myReq, strings.ToUpper(transportProtocol))
+	response, err := hashing.HashPw(message, strings.ToUpper(transportProtocol))
 	shared.ChecaErro(err, "Houve erro na requisição")
 	fmt.Println(response)
 	wg.Done()

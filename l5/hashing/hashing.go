@@ -20,21 +20,45 @@ type Request struct {
 	PwRaw string
 }
 
-func HashPw(req Request, transportProtocol string) (response Response, err error) {
-	err = nil
-	req.PwRaw = req.PwRaw
-
-	if req.PwRaw == "" {
-		err = errors.New("não houve password informado")
-		shared.ChecaErro(err, "não houve password informado")
-		return
-	}
-	response = requestor(req, transportProtocol)
-	return response, err
+type ClientProxy struct {
+	Host     string
+	Port     int
+	Id       int
+	TypeName string
 }
 
-func requestor(req Request, transportProtocol string) Response {
-	pwRawBytes, err := json.Marshal(req)
+type Invocation struct {
+	Host    string
+	Port    int
+	Request Request
+}
+
+type Requestor struct{}
+
+func HashPw(message string, transportProtocol string) (string, error) {
+	if message == "" {
+		err := errors.New("não houve password informado")
+		shared.ChecaErro(err, "não houve password informado")
+		return "", err
+	}
+
+	proxy := ClientProxy{Host: "localhost", Port: 3080, Id: 1, TypeName: "type"}
+
+	// Prepara a invocação ao Requestor
+	request := Request{PwRaw: message}
+	inv := Invocation{Host: proxy.Host, Port: proxy.Port, Request: request}
+
+	// invoke requestor
+	// Invoca o Requestor e aguarda resposta
+	req := Requestor{}
+	response := req.Invoke(inv, transportProtocol)
+
+	// Envia resposta ao Cliente
+	return response.PwSha256, nil
+}
+
+func (Requestor) Invoke(inv Invocation, transportProtocol string) Response {
+	pwRawBytes, err := json.Marshal(inv.Request)
 	shared.ChecaErro(err, "não foi possível fazer o marshal")
 
 	var response = Response{PwSha256: ""}
