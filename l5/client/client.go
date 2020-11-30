@@ -12,13 +12,12 @@ func client(wg *sync.WaitGroup, message string) {
 	m := make(map[string]clientproxy.ClientProxy)
 	namingService := naming.NamingService{Table: m}
 	hashing := namingService.Lookup("Hash")
-	adding := namingService.Lookup("Add")
 
 	for i := 0; i < 1; i++ {
 		response, _ := hashing.HashPw(message)
 		fmt.Println("Server response:", response)
-		response2, _ := adding.Add(1, 2)
-		fmt.Println("Server response:", response2)
+		//response2, _ := adding.Add(1, 2)
+		//fmt.Println("Server response:", response2)
 	}
 	wg.Done()
 }

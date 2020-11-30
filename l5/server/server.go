@@ -73,6 +73,7 @@ func main() {
 	m := make(map[string]clientproxy.ClientProxy)
 	namingService := naming.NamingService{Table: m}
 	hashing := clientproxy.ClientProxy{}
+
 	namingService.Register("Hash", hashing)
 	namingService.Register("Add", hashing)
 

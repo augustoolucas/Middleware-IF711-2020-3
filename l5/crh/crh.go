@@ -1,6 +1,7 @@
 package crh
 
 import (
+	"fmt"
 	"net"
 	"shared"
 	"strings"
@@ -21,6 +22,7 @@ func (CRH) SendReceive(msgToServer []byte, protocol string) []byte {
 		defer conn.Close()
 
 		_, err = conn.Write(msgToServer)
+		fmt.Println("mensagem do cliente", msgToServer)
 		shared.ChecaErro(err, "nao foi possivel enviar mensagem tcp")
 		response := make([]byte, 2048)
 		n, err := conn.Read(response)

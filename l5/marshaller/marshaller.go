@@ -20,11 +20,12 @@ func (Marshaller) Marshall(msg miop.Packet) []byte {
 
 func (Marshaller) Unmarshall(msg []byte) miop.Packet {
 	r := miop.Packet{}
+	//fmt.Println(msg, r)
 	err := json.Unmarshal(msg, &r)
 
 	if err != nil {
 		fmt.Println("Erro Unmarshall", err)
 	}
-
+	//fmt.Println(msg, r)
 	return r
 }

@@ -4,7 +4,9 @@ import (
 	"Middleware-IF711-2020-3/l5/auxiliar"
 	"Middleware-IF711-2020-3/l5/requestor"
 	"errors"
+	"fmt"
 	"shared"
+	"strconv"
 )
 
 type ClientProxy struct {
@@ -32,16 +34,23 @@ func (ClientProxy) HashPw(message string) (string, error) {
 	// Prepara a invocação ao Requestor
 	params := make([]interface{}, 1)
 	params[0] = message
+	fmt.Println("clientproxy:", params)
 	request := auxiliar.Request{Op: "Hash", Params: params}
 	inv := auxiliar.Invocation{Host: proxy.Host, Port: proxy.Port, Request: request}
 
 	// invoke requestor
 	// Invoca o Requestor e aguarda resposta
 	req := requestor.Requestor{}
-	response := req.Invoke(inv).([]interface{})
+	response := req.Invoke(inv)
 
+	fmt.Println("clientproxy:", response[0])
 	// Envia resposta ao Cliente
-	return string(response[0].(string)), nil
+	if response[0] == nil {
+		return "", nil
+	}
+	interfaceToString := fmt.Sprintf("%v", response[0])
+	fmt.Println("clientproxy:", interfaceToString)
+	return interfaceToString, nil
 }
 
 func (ClientProxy) Add(p1 int, p2 int) (int, error) {
@@ -57,8 +66,13 @@ func (ClientProxy) Add(p1 int, p2 int) (int, error) {
 	// invoke requestor
 	// Invoca o Requestor e aguarda resposta
 	req := requestor.Requestor{}
-	response := req.Invoke(inv).([]interface{})
-
+	response := req.Invoke(inv)
+	if response[0] == nil {
+		return 0, nil
+	}
+	println(response[0])
+	interfaceToString := fmt.Sprintf("%v", response[0])
+	stringToInt, _ := strconv.Atoi(interfaceToString)
 	// Envia resposta ao Cliente
-	return int(response[0].(float64)), nil
+	return stringToInt, nil
 }

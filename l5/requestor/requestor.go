@@ -4,13 +4,13 @@ import (
 	"Middleware-IF711-2020-3/l5/auxiliar"
 	"Middleware-IF711-2020-3/l5/crh"
 	"Middleware-IF711-2020-3/l5/marshaller"
-	"shared"
 	"Middleware-IF711-2020-3/l5/miop"
+	"shared"
 )
 
 type Requestor struct{}
 
-func (Requestor) Invoke(inv auxiliar.Invocation) interface{} {
+func (Requestor) Invoke(inv auxiliar.Invocation) []interface{} {
 	transportProtocol := shared.TRANSPORT_PROTOCOL
 	marshallerInst := marshaller.Marshaller{}
 	crhInst := crh.CRH{ServerHost: inv.Host, ServerPort: inv.Port}
@@ -23,12 +23,16 @@ func (Requestor) Invoke(inv auxiliar.Invocation) interface{} {
 
 	// serialise request packet
 	msgToClientBytes := marshallerInst.Marshall(miopPacketRequest)
+	// fmt.Println("Requestor:", miopPacketRequest)
 
 	// send request packet and receive reply packet
 	msgFromServerBytes := crhInst.SendReceive(msgToClientBytes, transportProtocol)
+	// fmt.Println("Requestor:", msgFromServerBytes)
 	miopPacketReply := marshallerInst.Unmarshall(msgFromServerBytes)
 
 	// extract result from reply packet
 	r := miopPacketReply.Bd.RepBody.OperationResult
-	return r
+	returnVal := make([]interface{}, 1)
+	returnVal[0] = r
+	return returnVal
 }

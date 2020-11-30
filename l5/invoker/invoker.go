@@ -6,8 +6,8 @@ import (
 	"Middleware-IF711-2020-3/l5/marshaller"
 	"Middleware-IF711-2020-3/l5/miop"
 	"Middleware-IF711-2020-3/l5/srh"
-	"shared"
 	"fmt"
+	"shared"
 )
 
 type ServerInvoker struct{}
@@ -22,8 +22,9 @@ func (ServerInvoker) Invoke() {
 	calculatorImpl := calculator.Calc{}
 
 	for {
+		fmt.Println("aqui")
 		rcvMsgBytes := srhImpl.Receive()
-
+		fmt.Println("invoker", rcvMsgBytes)
 		miopPacketRequest := marshallerImpl.Unmarshall(rcvMsgBytes)
 		operation := miopPacketRequest.Bd.ReqHeader.Operation
 
