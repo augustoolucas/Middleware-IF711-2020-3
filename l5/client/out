@@ -1,0 +1,58 @@
+Message: IAUSHEPIOUA
+{locahost 3300 1 server}
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52637->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52636->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52631->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52634->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52633->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52632->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52635->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52630->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52628->127.0.0.1:3315: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+{ 0 0 }
+{ 0 0 }
+Server response: [f1481065cb1c21efd0f3dbac22cf597e815157d2898d606a81c9d1a12f51e6eb]
+Client: # 1
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52655->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52654->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Client: # 1
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52652->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52653->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Client: # 1
+Server response: 
+Client: # 1
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52651->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52650->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Server response: 
+Client: # 1
+Client: # 1
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52656->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Server response: 
+Client: # 1
+Client: # 1
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52648->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+nao foi possivel receber mensagem tcp read tcp 127.0.0.1:52657->127.0.0.1:3300: wsarecv: Foi forçado o cancelamento de uma conexão existente pelo host remoto.
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Client: # 1
+Erro Unmarshall unexpected end of JSON input
+Server response: 
+Client: # 1

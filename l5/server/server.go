@@ -1,9 +1,7 @@
 package main
 
 import (
-	"Middleware-IF711-2020-3/l5/clientproxy"
 	"Middleware-IF711-2020-3/l5/invoker"
-	"Middleware-IF711-2020-3/l5/naming"
 	"fmt"
 )
 
@@ -70,12 +68,8 @@ import (
 // }
 
 func main() {
-	m := make(map[string]clientproxy.ClientProxy)
-	namingService := naming.NamingService{Table: m}
-	hashing := clientproxy.ClientProxy{}
-
-	namingService.Register("Hash", hashing)
-	namingService.Register("Add", hashing)
+	//acessar naming service
+	//namingService.Register("Hasher", hashing)
 
 	//invoker
 	myInvoker := invoker.ServerInvoker{}

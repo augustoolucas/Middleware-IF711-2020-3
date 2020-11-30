@@ -5,9 +5,11 @@ import (
 	"encoding/hex"
 )
 
-type Hash struct{}
+type Hash struct {
+	Available bool
+}
 
-func (Hash) Hashing(message string) string {
+func (Hash) HashSha256(message string) string {
 	hashed := sha256.Sum256([]byte(message))
 	response := hex.EncodeToString(hashed[:])
 

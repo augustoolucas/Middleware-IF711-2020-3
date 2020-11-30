@@ -3,6 +3,7 @@ package srh
 import (
 	"net"
 	"shared"
+	"fmt"
 )
 
 type SRH struct {
@@ -32,11 +33,21 @@ func (srh SRH) Receive() []byte {
 	transportProtocol := shared.TRANSPORT_PROTOCOL
 	reponse := make([]byte, 1)
 	if transportProtocol == "TCP" {
-		l, err = net.Listen("tcp", "localhost:3300")
-		shared.ChecaErro(err, "nao foi possivel criar servidor tcp")
+		for {
+			l, err = net.Listen("tcp", "localhost:3300")
+			//shared.ChecaErro(err, "nao foi possivel criar servidor tcp")
+			if err == nil {
+				break
+			}
+		}
 
-		conn, err = l.Accept()
-		shared.ChecaErro(err, "nao foi possivel aceitar conexao tcp")
+		for {
+			conn, err = l.Accept()
+			//shared.ChecaErro(err, "nao foi possivel aceitar conexao tcp")
+			if err == nil {
+				break
+			}
+		}
 
 		receivedReq := make([]byte, 2048)
 		n, err := conn.Read(receivedReq)
@@ -64,12 +75,14 @@ func (srh SRH) Receive() []byte {
 
 func (srh SRH) Send(msgBytes []byte) {
 	transportProtocol := shared.TRANSPORT_PROTOCOL
-	
+
 	if transportProtocol == "TCP" {
 		_, err := conn.Write(msgBytes)
 		shared.ChecaErro(err, "server: nao foi possivel enviar mensagem tcp")
 	}
 
-	conn.Close()
-	l.Close()
+	fmt.Println("MSG ENVIADA")
+
+	//conn.Close()
+	//l.Close()
 }

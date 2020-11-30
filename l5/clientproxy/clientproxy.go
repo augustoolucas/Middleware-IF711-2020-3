@@ -22,34 +22,34 @@ type Invocation struct {
 	Request auxiliar.Request
 }
 
-func (ClientProxy) HashPw(message string) (string, error) {
+func (clientProxy ClientProxy) HashSha256(message string) (string, error) {
 	if message == "" {
 		err := errors.New("não houve password informado")
 		shared.ChecaErro(err, "não houve password informado")
 		return "", err
 	}
 
-	proxy := ClientProxy{Host: "localhost", Port: 3080, Id: 1, TypeName: "type"}
+	//proxy := ClientProxy{Host: "localhost", Port: 3080, Id: 1, TypeName: "type"}
 
 	// Prepara a invocação ao Requestor
 	params := make([]interface{}, 1)
 	params[0] = message
-	fmt.Println("clientproxy:", params)
+	// fmt.Println("clientproxy:", params)
 	request := auxiliar.Request{Op: "Hash", Params: params}
-	inv := auxiliar.Invocation{Host: proxy.Host, Port: proxy.Port, Request: request}
+	inv := auxiliar.Invocation{Host: clientProxy.Host, Port: clientProxy.Port, Request: request}
 
 	// invoke requestor
 	// Invoca o Requestor e aguarda resposta
 	req := requestor.Requestor{}
 	response := req.Invoke(inv)
 
-	fmt.Println("clientproxy:", response[0])
+	// fmt.Println("clientproxy:", response[0])
 	// Envia resposta ao Cliente
 	if response[0] == nil {
 		return "", nil
 	}
 	interfaceToString := fmt.Sprintf("%v", response[0])
-	fmt.Println("clientproxy:", interfaceToString)
+	// fmt.Println("clientproxy:", interfaceToString)
 	return interfaceToString, nil
 }
 
